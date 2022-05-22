@@ -15,6 +15,10 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json())
 
+app.get("/", function (req, res) {
+    res.redirect("/graphql");
+});
+
 app.use('/graphql', graphqlHTTP({
   schema,
   pretty: true,
