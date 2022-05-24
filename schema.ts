@@ -71,6 +71,7 @@ const QueryType = new GraphQLObjectType({
     },
     Person: {
       type: PersonType,
+      description: "Single Star Wars Character",
       args: {
         id: {
           type: GraphQLString,
@@ -83,6 +84,7 @@ const QueryType = new GraphQLObjectType({
     },
     SearchPersonByName: {
       type: new GraphQLList(PersonType),
+      description: "Search a Star Wars Characters",
       args: {
         searchName: {
           type: GraphQLString,
@@ -100,7 +102,7 @@ const QueryType = new GraphQLObjectType({
     },
     GetAllPeopleCount: {
       type: GraphQLInt,
-      description: "Count of Star Wars Characters",
+      description: "Count of All Star Wars Characters",
       resolve: (root, args) =>
         fetch(`${SWAPI_URL}/people`)
           .then((response) => response.json())
@@ -108,6 +110,7 @@ const QueryType = new GraphQLObjectType({
     },
     GetSearchedPeopleCount: {
       type: GraphQLInt,
+      description: "Count of Searched Star Wars Characters",
       args: {
         searchName: {
           type: GraphQLString,
