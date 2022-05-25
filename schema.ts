@@ -1,5 +1,3 @@
-// FROM SWAPI API DOCS https://github.com/graphql/swapi-graphql/blob/master/src/schema/types/person.js
-
 import {
   GraphQLObjectType,
   GraphQLString,
@@ -10,7 +8,7 @@ import {
 import fetch from "node-fetch";
 import { SWAPI_URL } from "./variables";
 
-const PersonType = new GraphQLObjectType({
+const PersonGQLType = new GraphQLObjectType({
   name: "Person",
   description:
     "An individual person or character within the Star Wars universe.",
@@ -48,12 +46,30 @@ const PersonType = new GraphQLObjectType({
   }),
 });
 
+const PeopleGQLType = new GraphQLObjectType({
+  name: "People",
+  fields: () => ({
+    count: {
+      type: GraphQLInt,
+    },
+    next: {
+      type: GraphQLString,
+    },
+    previous: {
+      type: GraphQLString,
+    },
+    results: {
+      type: new GraphQLList(PersonGQLType),
+    },
+  }),
+});
+
 const QueryType = new GraphQLObjectType({
   name: "Query",
   description: "Root Query of all",
   fields: () => ({
     People: {
-      type: new GraphQLList(PersonType),
+      type: PeopleGQLType,
       description: "Star Wars Characters",
       args: {
         pageNumber: {
@@ -67,24 +83,11 @@ const QueryType = new GraphQLObjectType({
             : `${SWAPI_URL}/people`
         )
           .then((response) => response.json())
-          .then((data) => data.results),
-    },
-    Person: {
-      type: PersonType,
-      description: "Single Star Wars Character",
-      args: {
-        id: {
-          type: GraphQLString,
-        },
-      },
-      resolve: (root, args) =>
-        fetch(`${SWAPI_URL}/people/${args.id}`)
-          .then((response) => response.json())
           .then((data) => data),
     },
-    SearchPersonByName: {
-      type: new GraphQLList(PersonType),
-      description: "Search a Star Wars Characters",
+    Person: {
+      type: PeopleGQLType,
+      description: "Single and Searched Star Wars Character",
       args: {
         searchName: {
           type: GraphQLString,
@@ -98,28 +101,7 @@ const QueryType = new GraphQLObjectType({
           `${SWAPI_URL}/people/?search=${args.searchName}&page=${args.pageNumber}`
         )
           .then((response) => response.json())
-          .then((data) => data.results),
-    },
-    GetAllPeopleCount: {
-      type: GraphQLInt,
-      description: "Count of All Star Wars Characters",
-      resolve: (root, args) =>
-        fetch(`${SWAPI_URL}/people`)
-          .then((response) => response.json())
-          .then((data) => data.count),
-    },
-    GetSearchedPeopleCount: {
-      type: GraphQLInt,
-      description: "Count of Searched Star Wars Characters",
-      args: {
-        searchName: {
-          type: GraphQLString,
-        },
-      },
-      resolve: (root, args) =>
-        fetch(`${SWAPI_URL}/people/?search=${args.searchName}`)
-          .then((response) => response.json())
-          .then((data) => data.count),
+          .then((data) => data),
     },
   }),
 });
