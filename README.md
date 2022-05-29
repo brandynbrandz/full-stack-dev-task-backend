@@ -1,14 +1,15 @@
 # Sov-Swapi
 
-- A task by sovtech
+- A task by sovtech. [DEMO](https://3z6x3f.sse.codesandbox.io/)
 
 # Technologies
 
 ### Backend
 
 - Swapi-API
-- Node JS
+- Node
 - GraphQL
+- Typescript
 
 # Accessing
 
